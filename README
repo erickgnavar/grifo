@@ -1,0 +1,4 @@
+Para correr el programa ejecutar
+	foreman start
+Archivo de configuracion
+	grifo/manage.py

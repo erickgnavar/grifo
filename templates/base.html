@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="shortcut icon" href="/media/img/gas-icon.png" />
+	<link rel="stylesheet" type="text/css" href="/media/css/style.css" />
+	<script type="text/javascript" src="/media/js/jquery.js"></script>
+	{% block head %}{% endblock %}
+</head>
+<body>
+	<header id="page-header">
+		{% block header %}{% endblock %}
+	</header>
+	<section id="page-content">
+		{% block content %}{% endblock %}
+	</section>
+	<footer id="page-footer">
+		{% block footer %}{% endblock %}
+	</footer>
+	{% block last_script %}{% endblock %}
+</body>
+</html>

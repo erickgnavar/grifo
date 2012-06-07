@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}GasNatu | Consumo combustibles{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="/media/js/chart.js"></script>
+	<script type="text/javascript">
+		google.load('visualization', '1.0', {'packages':['corechart']});
+		google.setOnLoadCallback(function(){
+			/* Chart Cantidad */
+			var data_cantidad = new google.visualization.DataTable();
+			data_cantidad.addColumn('string', 'Combustible');
+			data_cantidad.addColumn('number', 'Cantidad');
+			data_cantidad.addRows([
+				{% for item in data %}
+					['{{ item.nombre|capfirst }}', {{ item.cantidad }}],
+				{% endfor %}	
+			]);			
+			var options_cantidad = {
+				'title': 'Distribucion de ventas por cantidad | L',
+				'width': 400,
+				'height': 300
+			}
+			var chart_cantidad = new google.visualization.PieChart(document.getElementById('chart-cantidad'));
+			chart_cantidad.draw(data_cantidad, options_cantidad);
+			/* Chart Monto */
+			var data_monto = new google.visualization.DataTable();
+			data_monto.addColumn('string', 'Combustible');
+			data_monto.addColumn('number', 'Monto');
+			data_monto.addRows([
+				{% for item in data %}
+					['{{ item.nombre|capfirst }}', {{ item.monto }}],
+				{% endfor %}	
+			]);			
+			var options_monto = {
+				'title': 'Distribucion de ventas por monto | S/.',
+				'width': 400,
+				'height': 300
+			}
+			var chart_monto = new google.visualization.PieChart(document.getElementById('chart-monto'));
+			chart_monto.draw(data_monto, options_monto);
+			/* Chart Distribucion por meses */
+			var data_meses = new google.visualization.DataTable();
+			data_meses.addColumn('string', 'Mes');
+			data_meses.addColumn('number', 'Cantidad');
+			data_meses.addRows([
+				{% for item in data_meses %}
+					['{{ item.mes|capfirst }}', {{ item.cantidad }}],
+				{% endfor %}	
+			]);			
+			var options_meses = {
+				'title': 'Distribucion de ventas por meses | L',
+				'width': 820,
+				'height': 400
+			}
+			var chart_meses = new google.visualization.ColumnChart(document.getElementById('chart-meses'));
+			chart_meses.draw(data_meses, options_meses);
+		});
+	</script>
+{% endblock %}
+{% block header %}
+	<h1>Estadisticas de Consumo de Combustible para el 2012</h1>
+{% endblock %}
+{% block content %}
+	<section class="chart-box">
+		<article id="chart-cantidad" class="chart"></article>
+		<article id="chart-monto" class="chart"></article>
+		<article id="chart-meses" class="chart"></article>
+	</section>
+{% endblock %}

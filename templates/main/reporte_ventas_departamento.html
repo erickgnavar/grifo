@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load poll_extras %}
+{% block title %}Ventas por departamento | Gasnatu{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="/media/js/chart.js"></script>
+	<script type="text/javascript">
+		google.load('visualization', '1.0', {'packages':['corechart']});
+		google.setOnLoadCallback(function(){
+			/* Chart Cantidad */
+			var data_cantidad = new google.visualization.DataTable();
+			data_cantidad.addColumn('string', 'Estacion');
+			data_cantidad.addColumn('number', 'Cantidad');
+			data_cantidad.addRows([
+				{% for item in data %}
+					['{{ item.estacion|capfirst }}', {{ item.cantidad }}],
+				{% endfor %}	
+			]);			
+			var options_cantidad = {
+				'title': 'Distribucion de ventas por cantidad | L',
+				'width': 800,
+				'height': 300
+			}
+			var chart_cantidad = new google.visualization.ColumnChart(document.getElementById('chart-cantidad'));
+			chart_cantidad.draw(data_cantidad, options_cantidad);
+			/* Chart Monto */
+			var data_monto = new google.visualization.DataTable();
+			data_monto.addColumn('string', 'Estacion');
+			data_monto.addColumn('number', 'Monto');
+			data_monto.addRows([
+				{% for item in data %}
+					['{{ item.nombre|capfirst }}', {{ item.monto }}],
+				{% endfor %}	
+			]);			
+			var options_monto = {
+				'title': 'Distribucion de ventas por monto | S/.',
+				'width': 800,
+				'height': 300
+			}
+			var chart_monto = new google.visualization.ColumnChart(document.getElementById('chart-monto'));
+			chart_monto.draw(data_monto, options_monto);
+		});
+	</script>
+{% endblock %}
+{% block header %}
+	{% if ventas %}
+	<h1>Reporte de Ventas para el departamento de {{ departamento|capfirst }}</h1>
+	<h2><a href="#charts" id="estadisticas">Ver estadisticas</a> <a href="/main/admin"><img src="/media/img/nut.png"></a></h2>
+	{% else %}
+	<h1>No se encontro datos</h1>
+	{% endif %}
+{% endblock %}
+{% block content %}
+	{% if ventas %}
+	<article>
+		<table>
+			<tr>
+				<th>Estacion</th>
+				<th>Cantidad</th>
+				<th>monto</th>
+			</tr>
+			{% for venta in ventas %}
+			<tr>
+				<td>{{ venta.estacion }}</td>
+				<td>{{ venta.cantidad }}</td>
+				<td>{{ venta.cantidad|mult:venta.combustible.precio }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</article>
+	<section class="chart-box" id="charts">
+		<article id="chart-cantidad" class="chart"></article>
+		<article id="chart-monto" class="chart"></article>
+	</section>
+	{% endif %}
+{% endblock %}
+{% block last_script %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#charts').hide();
+			$('#estadisticas').click(function(e){
+				$('#charts').fadeIn('slow');
+			});
+		});
+	</script>
+{% endblock %}

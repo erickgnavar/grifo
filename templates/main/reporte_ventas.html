@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load poll_extras %}
+{% block title %}Ventas | Gasnatu{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="/media/js/chart.js"></script>
+	<script type="text/javascript">
+		google.load('visualization', '1.0', {'packages':['corechart']});
+		google.setOnLoadCallback(function(){
+			/* Chart Cantidad */
+			var data_cantidad = new google.visualization.DataTable();
+			data_cantidad.addColumn('string', 'Combustible');
+			data_cantidad.addColumn('number', 'Cantidad');
+			data_cantidad.addRows([
+				{% for item in data %}
+					['{{ item.nombre|capfirst }}', {{ item.cantidad }}],
+				{% endfor %}	
+			]);			
+			var options_cantidad = {
+				'title': 'Distribucion de ventas por cantidad | L',
+				'width': 400,
+				'height': 300
+			}
+			var chart_cantidad = new google.visualization.PieChart(document.getElementById('chart-cantidad'));
+			chart_cantidad.draw(data_cantidad, options_cantidad);
+			/* Chart Monto */
+			var data_monto = new google.visualization.DataTable();
+			data_monto.addColumn('string', 'Combustible');
+			data_monto.addColumn('number', 'Monto');
+			data_monto.addRows([
+				{% for item in data %}
+					['{{ item.nombre|capfirst }}', {{ item.monto }}],
+				{% endfor %}	
+			]);			
+			var options_monto = {
+				'title': 'Distribucion de ventas por monto | S/.',
+				'width': 400,
+				'height': 300
+			}
+			var chart_monto = new google.visualization.PieChart(document.getElementById('chart-monto'));
+			chart_monto.draw(data_monto, options_monto);
+			/* Chart Estaciones */
+			var data_estaciones = new google.visualization.DataTable();
+			data_estaciones.addColumn('string', 'Estacion');
+			data_estaciones.addColumn('number', 'Cantidad');
+			data_estaciones.addRows([
+				{% for item in data_estaciones %}
+					['{{ item.estacion|capfirst }}', {{ item.cantidad }}],
+				{% endfor %}	
+			]);			
+			var options_estaciones = {
+				'title': 'Distribucion de ventas por estaciones | L',
+				'width': 820,
+				'height': 400
+			}
+			var chart_estaciones = new google.visualization.ColumnChart(document.getElementById('chart-estaciones'));
+			chart_estaciones.draw(data_estaciones, options_estaciones);
+		});
+	</script>
+{% endblock %}
+{% block header %}
+	{% if ventas %}
+	<h1>Reporte de Ventas para {{ fecha }}</h1>
+	<h2><a href="#charts" id="estadisticas">Ver estadisticas</a> <a href="/main/admin"><img src="/media/img/nut.png"></a></h2>
+	{% else %}
+	<h1>No se encontro datos</h1>
+	{% endif %}
+{% endblock %}
+{% block content %}
+	{% if ventas %}
+	<article>		
+		<table>
+			<tr>
+				<th>Cantidad</th>
+				<th>Combustible</th>
+				<th>Estacion</th>
+				<th>Monto</th>
+				<th>Fecha</th>
+			</tr>
+			{% for venta in ventas %}
+			<tr>
+				<td>{{ venta.cantidad }}</td>
+				<td>{{ venta.combustible }}</td>
+				<td>{{ venta.estacion }}</td>
+				<td>{{ venta.combustible.precio|mult:venta.cantidad }}</td>
+				<td>{{ venta.fecha_creado|date:'d - m - y' }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</article>
+	<section id="charts" class="chart-box">
+		<article id="chart-cantidad" class="chart"></article>
+		<article id="chart-monto" class="chart"></article>
+		<article id="chart-estaciones" class="chart"></article>
+	</section>
+	{% endif %}
+{% endblock %}
+{% block last_script %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#charts').hide();
+			$('#estadisticas').click(function(e){
+				$('#charts').fadeIn('slow');
+			});
+		});
+	</script>
+{% endblock %}
