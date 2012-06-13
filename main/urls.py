@@ -21,4 +21,6 @@ urlpatterns = patterns('',
 	url(r'^ventas/(\d{4})/(\d{1,2})/$', 'main.views.ventas_mes'),
 	url(r'^ventas/(\d{4})/$', 'main.views.ventas_anio'),
 	url(r'^ventas/departamento/([a-zA-Z]+)/$', 'main.views.ventas_departamento'),
+	url(r'^ventas/estacion/$', 'main.views.ventas_estacion'),
+	url(r'^json/ventas/estacion/$', 'main.views.jsonVentas'),
 )

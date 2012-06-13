@@ -1,4 +1,5 @@
 from datetime import datetime, date
+import json
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -122,10 +123,34 @@ def graficoVentasEstacion(ventas):
 				item['cantidad'] += venta.cantidad
 	return data_estaciones
 
+def ventas_estacion(request):
+	return render_to_response('main/reporte_ventas_estacion.html')
+
+def jsonVentas(request):
+	data = {}
+	labels = []
+	values = []
+	estaciones = EstacionServicio.objects.all()
+	combustibles = Combustible.objects.all()
+	for combustible in combustibles:
+		labels.append(combustible.tipo)
+	for estacion in estaciones:
+		ventas = Venta.objects.filter(estacion__nombre=estacion.nombre)
+		cantidades = []
+		for combustible in combustibles:
+			can = 0
+			for v in ventas.filter(combustible__tipo=combustible.tipo):
+				can += v.cantidad
+			# cantidades.append(len(ventas.filter(combustible__tipo=combustible.tipo)))
+			cantidades.append(can)
+		v = {}
+		v['label'] = estacion.nombre
+		v['values'] = cantidades
+		values.append(v)
+	data['label'] = labels
+	data['values'] = values
+	return HttpResponse(json.dumps(data), mimetype="application/json")
 
 
 def prueba(request, nombre):
 	return HttpResponse(nombre)
-
-
-
