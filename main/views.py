@@ -49,11 +49,10 @@ def consumo_combustibles(request):
 	return render_to_response('main/consumo_combustibles.html', {'data': data, 'data_meses': data_meses})
 
 def ventas_dia(request, anio, mes, dia):
-	# fecha_pedida = date((int)(anio), (int)(mes), (int)(dia))
 	fecha = '%s - %s - %s' % (anio, mes, dia)
 	anio = (int)(anio)
 	mes = (int)(mes)
-	dia = (int)(dia)
+	dia = (int)(dia) + 1
 	# ventas = Venta.objects.filter(fecha_creado__startswith=fecha_pedida)
 	ventas = Venta.objects.filter(fecha_creado__year=anio, fecha_creado__month=mes, fecha_creado__day=dia)
 	data = graficoVentas(ventas)

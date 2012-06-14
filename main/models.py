@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 DEPARTAMENTOS = (
 	('AMAZONAS', 'AMAZONAS'),
@@ -34,8 +35,8 @@ GRIFERO_ESTADOS = (
 )
 
 class Combustible(models.Model):
-	nombre = models.CharField(max_length=20)
-	precio = models.FloatField()
+	nombre = models.CharField(max_length=20, unique=True)
+	precio = models.FloatField(null=False)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
@@ -44,21 +45,21 @@ class Combustible(models.Model):
 
 
 class EstacionServicio(models.Model):
-	nombre = models.CharField(max_length=20)
+	nombre = models.CharField(max_length=20, null=False)
 	direccion = models.CharField(max_length=40)
-	departamento = models.CharField(max_length=30, choices=DEPARTAMENTOS)
+	departamento = models.CharField(max_length=30, choices=DEPARTAMENTOS, null=False)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
 	def __unicode__(self):
-		return self.nombre
+		return '%s - %s' % (self.departamento, self.direccion)
 
 
 class Grifero(models.Model):
-	nombre = models.CharField(max_length=30)
+	nombre = models.CharField(max_length=30, null=False)
 	usuario = models.CharField(max_length=20, unique=True)
 	clave = models.CharField(max_length=20, null=False)
-	estado = models.CharField(max_length=20, choices=GRIFERO_ESTADOS)
+	estado = models.CharField(max_length=20, choices=GRIFERO_ESTADOS, null=False)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
@@ -67,9 +68,9 @@ class Grifero(models.Model):
 
 
 class Modulo(models.Model):
-	numero = models.IntegerField()
+	numero = models.IntegerField(null=False)
 	combustibles = models.ManyToManyField(Combustible)
-	estacion = models.ForeignKey(EstacionServicio)
+	estacion = models.ForeignKey(EstacionServicio, null=False)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
@@ -78,38 +79,38 @@ class Modulo(models.Model):
 
 
 class Venta(models.Model):
-	cantidad = models.IntegerField()
-	estacion = models.ForeignKey(EstacionServicio)
+	cantidad = models.IntegerField(null=False)
+	estacion = models.ForeignKey(EstacionServicio, null=False)
 	combustible = models.ForeignKey(Combustible, null=False)
+	documento_cliente = models.IntegerField(null=True, blank=True)
+	nombre_cliente = models.CharField(max_length=20, null=True, blank=True)
+	grifero = models.ForeignKey(Grifero, null=False)
+	subtotal = models.FloatField(null=False, blank=True, default=0)
+	total = models.FloatField(null=False, blank=True, default=0)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 
-	def save(self, *args, **kwargs):
-		try:
-			tanque = Tanque.objects.get(combustible__nombre=self.combustible.nombre, estacion__nombre=self.estacion.nombre)
-			if tanque:
-				tanque.contenido -= self.cantidad
-				tanque.save()
-				super(Venta, self).save(*args, **kwargs)
-		except:
-			pass
+	# def save(self, *args, **kwargs):
+	# 	try:
+	# 		tanque = Tanque.objects.get(combustible__nombre=self.combustible.nombre, estacion__nombre=self.estacion.nombre)
+	# 		if tanque:
+	# 			if self.cantidad <= tanque.contenido:
+	# 				tanque.contenido -= self.cantidad
+	# 				tanque.save()
+	# 				super(Venta, self).save(*args, **kwargs)
+	# 			else:
+	# 				raise ValidationError('Combustible no disponible en tanque')
+	# 	except:
+	# 		raise ValidationError('Tanque Inexistente')
 
 	def __unicode__(self):
-		return "%i %s :  %f" % (self.cantidad, self.combustible, self.cantidad * self.combustible.precio) 
-
-
-class Recibo(models.Model):
-	documento = models.IntegerField()
-	nombre = models.CharField(max_length=20)
-	items = models.ManyToManyField(Venta)
-	grifero = models.ForeignKey(Grifero, null=False)
-	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
+		return "%i %s :  %f" % (self.cantidad, self.combustible, self.cantidad * self.combustible.precio)
 
 
 class Tanque(models.Model):
-	combustible = models.ForeignKey(Combustible)
+	combustible = models.ForeignKey(Combustible, null=True)
 	capacidad = models.FloatField()
 	contenido = models.FloatField()
-	estacion = models.ForeignKey(EstacionServicio)
+	estacion = models.ForeignKey(EstacionServicio, null=True)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
