@@ -1,13 +1,13 @@
 from datetime import datetime, date
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 
 from models import *
 
 def home(request):
-	return render_to_response('home.html')
+	return HttpResponseRedirect('/main/admin')
 
 def error_500(request):
 	return render_to_response('500.html')
@@ -94,6 +94,38 @@ def ventas_departamento(request, departamento):
 
 	return render_to_response('main/reporte_ventas_departamento.html', {'ventas': ventas, 'data': data, 'departamento': departamento})
 
+
+def ventas_estacion(request):
+	return render_to_response('main/reporte_ventas_estacion.html')
+
+def jsonVentas(request):
+	data = {}
+	labels = []
+	values = []
+	estaciones = EstacionServicio.objects.all()
+	combustibles = Combustible.objects.all()
+	for combustible in combustibles:
+		labels.append(combustible.nombre)
+	for estacion in estaciones:
+		ventas = Venta.objects.filter(estacion__nombre=estacion.nombre)
+		cantidades = []
+		for combustible in combustibles:
+			can = 0
+			for v in ventas.filter(combustible__nombre=combustible.nombre):
+				can += v.cantidad
+			cantidades.append(can)
+		v = {}
+		v['label'] = estacion.nombre
+		v['values'] = cantidades
+		values.append(v)
+	data['label'] = labels
+	data['values'] = values
+	return HttpResponse(json.dumps(data), mimetype="application/json")
+
+
+def prueba(request, nombre):
+	return HttpResponse(nombre)
+
 #Funciones aparte
 
 def graficoVentas(ventas):
@@ -102,11 +134,11 @@ def graficoVentas(ventas):
 	data = []
 
 	for combustible in combustibles:
-		data.append({'nombre': combustible.tipo, 'cantidad': 0, 'monto': 0})
+		data.append({'nombre': combustible.nombre, 'cantidad': 0, 'monto': 0})
 
 	for venta in ventas:
 		for item in data:
-			if venta.combustible.tipo == item['nombre']:
+			if venta.combustible.nombre == item['nombre']:
 				item['cantidad'] += venta.cantidad
 				item['monto'] += venta.combustible.precio * venta.cantidad
 	return data
@@ -122,35 +154,3 @@ def graficoVentasEstacion(ventas):
 			if venta.estacion.nombre == item['estacion']:
 				item['cantidad'] += venta.cantidad
 	return data_estaciones
-
-def ventas_estacion(request):
-	return render_to_response('main/reporte_ventas_estacion.html')
-
-def jsonVentas(request):
-	data = {}
-	labels = []
-	values = []
-	estaciones = EstacionServicio.objects.all()
-	combustibles = Combustible.objects.all()
-	for combustible in combustibles:
-		labels.append(combustible.tipo)
-	for estacion in estaciones:
-		ventas = Venta.objects.filter(estacion__nombre=estacion.nombre)
-		cantidades = []
-		for combustible in combustibles:
-			can = 0
-			for v in ventas.filter(combustible__tipo=combustible.tipo):
-				can += v.cantidad
-			# cantidades.append(len(ventas.filter(combustible__tipo=combustible.tipo)))
-			cantidades.append(can)
-		v = {}
-		v['label'] = estacion.nombre
-		v['values'] = cantidades
-		values.append(v)
-	data['label'] = labels
-	data['values'] = values
-	return HttpResponse(json.dumps(data), mimetype="application/json")
-
-
-def prueba(request, nombre):
-	return HttpResponse(nombre)

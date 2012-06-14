@@ -7,7 +7,7 @@ class VentaAdmin(admin.ModelAdmin):
 
 
 class CombustibleAdmin(admin.ModelAdmin):
-	list_display = ('id', 'tipo', 'precio', 'fecha_creado')
+	list_display = ('id', 'nombre', 'precio', 'fecha_creado', 'fecha_actualizado')
 
 
 class ModuloAdmin(admin.ModelAdmin):
@@ -23,7 +23,7 @@ class GriferoAdmin(admin.ModelAdmin):
 
 
 class ReciboAdmin(admin.ModelAdmin):
-	list_display = ('id', 'grifero', 'fecha_creado')
+	list_display = ('id', 'grifero', 'documento', 'fecha_creado')
 
 class TanqueAdmin(admin.ModelAdmin):
 	list_display = ('id', 'combustible', 'capacidad', 'contenido', 'estacion', 'fecha_actualizado')

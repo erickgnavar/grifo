@@ -34,13 +34,13 @@ GRIFERO_ESTADOS = (
 )
 
 class Combustible(models.Model):
-	tipo = models.CharField(max_length=20)
+	nombre = models.CharField(max_length=20)
 	precio = models.FloatField()
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
 	def __unicode__(self):
-		return self.tipo
+		return self.nombre
 
 
 class EstacionServicio(models.Model):
@@ -83,11 +83,23 @@ class Venta(models.Model):
 	combustible = models.ForeignKey(Combustible, null=False)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 
+	def save(self, *args, **kwargs):
+		try:
+			tanque = Tanque.objects.get(combustible__nombre=self.combustible.nombre, estacion__nombre=self.estacion.nombre)
+			if tanque:
+				tanque.contenido -= self.cantidad
+				tanque.save()
+				super(Venta, self).save(*args, **kwargs)
+		except:
+			pass
+
 	def __unicode__(self):
-		return "%i - %s" % (self.cantidad, self.combustible) 
+		return "%i %s :  %f" % (self.cantidad, self.combustible, self.cantidad * self.combustible.precio) 
 
 
 class Recibo(models.Model):
+	documento = models.IntegerField()
+	nombre = models.CharField(max_length=20)
 	items = models.ManyToManyField(Venta)
 	grifero = models.ForeignKey(Grifero, null=False)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
@@ -102,4 +114,4 @@ class Tanque(models.Model):
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 
 	def __unicode__(self):
-		return str(self.combustible.tipo)
+		return str(self.combustible.nombre)
