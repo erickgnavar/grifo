@@ -15,6 +15,10 @@
 		<input name="fecha" id="fecha" type="date" placeholder="AAAA/MM/DD" />
 		<input type="submit" value="Consultar" />
 	</form>
+	<form id="form-estacion">
+		<label for=""></label>
+		<input type="submit" value="Consultar" />
+	</form>
 {% endblock %}
 {% block last_script %}
 	<script type="text/javascript">
@@ -31,6 +35,11 @@
 				e.preventDefault();
 				url = $('#fecha').val();
 				$('#form-fecha').attr('action', '/main/ventas/' + url);
+				this.submit();
+			});
+			$('#form-estacion').submit(function(e){
+				e.preventDefault();
+				$('#form-estacion').attr('action', '/main/ventas/estacion');
 				this.submit();
 			});
 		});
