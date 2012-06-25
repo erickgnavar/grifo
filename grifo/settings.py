@@ -1,7 +1,7 @@
 import os
 # Django settings for grifo project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -16,7 +16,7 @@ DATABASES = {
 		'NAME': 'grifo',                      # Or path to database file if using sqlite3.
 		'USER': 'grifo',                      # Not used with sqlite3.
 		'PASSWORD': 'grifo',                  # Not used with sqlite3.
-		'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+		'HOST': '192.168.1.11',                      # Set to empty string for localhost. Not used with sqlite3.
 		'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
 	}
 }

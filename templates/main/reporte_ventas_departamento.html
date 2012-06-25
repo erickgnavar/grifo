@@ -44,7 +44,7 @@
 {% block header %}
 	{% if ventas %}
 	<h1>Reporte de Ventas para el departamento de {{ departamento|capfirst }}</h1>
-	<h2><a href="#charts" id="estadisticas">Ver estadisticas</a> <a href="/main/admin"><img src="/media/img/nut.png"></a></h2>
+	<h2><a href="#charts" id="estadisticas" class="btn btn-info">estadisticas</a></h2>
 	{% else %}
 	<h1>No se encontro datos</h1>
 	{% endif %}
@@ -52,24 +52,30 @@
 {% block content %}
 	{% if ventas %}
 	<article>
-		<table>
-			<tr>
-				<th>Estacion</th>
-				<th>Cantidad</th>
-				<th>monto</th>
-			</tr>
-			{% for venta in ventas %}
-			<tr>
-				<td>{{ venta.estacion }}</td>
-				<td>{{ venta.cantidad }}</td>
-				<td>{{ venta.cantidad|mult:venta.combustible.precio }}</td>
-			</tr>
-			{% endfor %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Combustible</th>
+					<th>Cantidad</th>
+					<th>Estacion</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for venta in ventas %}
+				<tr>
+					<td>{{ venta.combustible.nombre }}</td>
+					<td>{{ venta.cantidad }}</td>
+					<td>{{ venta.estacion.nombre }}</td>
+					<td>{{ venta.total }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
 		</table>
 	</article>
-	<section class="chart-box" id="charts">
-		<article id="chart-cantidad" class="chart"></article>
-		<article id="chart-monto" class="chart"></article>
+	<section id="charts">
+		<article id="chart-cantidad" class="span12"></article>
+		<article id="chart-monto" class="span12"></article>
 	</section>
 	{% endif %}
 {% endblock %}

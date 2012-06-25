@@ -4,20 +4,37 @@
 	<meta charset="utf-8">
 	<title>{% block title %}{% endblock %} | Gasnatu</title>
 	<link rel="shortcut icon" href="/media/img/gas-icon.png" />
-	<link rel="stylesheet" type="text/css" href="/media/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/media/css/bootstrap.css" />
 	<script type="text/javascript" src="/media/js/jquery.js"></script>
+	<script type="text/javascript" src="/media/js/bootstrap.js"></script>
 	{% block head %}{% endblock %}
 </head>
 <body>
-	<header id="page-header">
-		{% block header %}{% endblock %}
-	</header>
-	<section id="page-content">
-		{% block content %}{% endblock %}
-	</section>
-	<footer id="page-footer">
-		{% block footer %}{% endblock %}
-	</footer>
+	 <nav class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<ul class="nav">
+					<li class="active"><a href="/">Inicio</a></li>
+					<li><a href="#">Precios</a></li>
+					<li><a href="/main/logout">Salir</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<header class="page-header lead">
+			<div class="inner">
+				<br /><br />
+				{% block header %}{% endblock %}
+			</div>
+		</header>
+		<section>
+			{% block content %}{% endblock %}
+		</section>
+		<footer>
+			{% block footer %}{% endblock %}
+		</footer>
+	</div>
 	{% block last_script %}{% endblock %}
 </body>
 </html>

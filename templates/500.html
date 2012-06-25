@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}Error 500{% endblock %}
+{% block title %}Error servidor{% endblock %}
 {% block header %}
-	<h1>Error en el servidor</h1>
+	<h1>500 - Internal Error</h1>
+{% endblock %}
+{% block content %}
+	<div class="alert alert-error">Ha ocurrido un error vuelve a intentar</div>
 {% endblock %}

@@ -3,17 +3,18 @@
 {% block title %}Ventas por departamento{% endblock %}
 {% block head %}
 	<script type="text/javascript" src="/media/js/jit.js"></script>
+	<script type="text/javascript" src="/media/js/socket.io.js"></script>
 	<style type="text/css">
-	em{
-		margin-left: 10px;
-	}
+		em{
+			margin-left: 10px;
+		}
 		ul, li{margin: 0; padding: 0}
 		#chart{
 			background: rgba(0,0,0,0.7);
 			border-radius: 10px;
 			margin: 0 auto;
 			padding: 20px;
-			width: 600px;
+			width: 900px;
 		}
 		.cuadro{
 			background: rgba(255,255,255,0.6);
@@ -40,20 +41,22 @@
 	</article>
 	<article id="legends">
 		<ul>
+
 		</ul>
 	</article>
 {% endblock %}
 {% block last_script %}
 	<script type="text/javascript">
+		var barchart;
 		$.getJSON('/main/json/ventas/estacion/', function(data) {
 			drawChart(data);
 		});
 		function drawChart(json){
-			var barchart = new $jit.BarChart({
+			barchart = new $jit.BarChart({
 				animate: true,
 				injectInto: 'chart',
 				barsOffset: 20,
-				width: 600,
+				width: 900,
 				height: 400,
 				orientation: 'vertical',
 				type: 'stacked:gradient',
@@ -80,5 +83,16 @@
 			}
 			$('#legends ul').html('<li>' + items.join('</li><li>') + '</li>');
 		}
+		function updateChart(){
+			$.getJSON('/main/json/ventas/estacion/', function(data){
+				barchart.updateJSON(data);
+			});
+		}
+		var socket = io.connect('http://127.0.0.1:7000');
+		socket.on('update-chart',function(data){
+			updateChart();
+			console.log('Chart updated');
+		});
+		// setInterval(updateChart, 1000);
 	</script>
 {% endblock %}

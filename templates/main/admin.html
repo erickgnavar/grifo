@@ -5,20 +5,22 @@
 	<h1>Panel administrativo de consultas de datos</h1>
 {% endblock %}
 {% block content %}
-	<form id="form-departamento">
-		<label for="departamento">Consulta de ventas por departamento</label>
-		<input name="departamento" id="departamento" type="text" placeholder="departamento" />
-		<input type="submit" value="Consultar" />
-	</form>
-	<form id="form-fecha">
-		<label for="fecha">Consulta de ventas por fecha</label>
-		<input name="fecha" id="fecha" type="date" placeholder="AAAA/MM/DD" />
-		<input type="submit" value="Consultar" />
-	</form>
-	<form id="form-estacion">
-		<label for=""></label>
-		<input type="submit" value="Consultar" />
-	</form>
+	<div class="row">
+		<form id="form-departamento" class="span4">
+			<label for="departamento">Consulta de ventas por departamento</label>
+			<input name="departamento" id="departamento" type="text" placeholder="departamento" />
+			<input type="submit" value="Consultar" class="btn" />
+		</form>
+		<form id="form-fecha" class="span4">
+			<label for="fecha">Consulta de ventas por fecha</label>
+			<input name="fecha" id="fecha" type="date" placeholder="AAAA/MM/DD" />
+			<input type="submit" value="Consultar" class="btn" />
+		</form>
+		<form id="form-estacion" class="span4">
+			<label for=""></label>
+			<input type="submit" value="Consultar" class="btn" />
+		</form>
+	</div>
 {% endblock %}
 {% block last_script %}
 	<script type="text/javascript">

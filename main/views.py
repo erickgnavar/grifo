@@ -1,8 +1,13 @@
 from datetime import datetime, date
 import json
 
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 from models import *
 
@@ -19,8 +24,33 @@ def griferos(request):
 	griferos = Grifero.objects.all()
 	return render_to_response('main/griferos.html', {'griferos': griferos})
 
+@login_required(login_url='/main/login')
 def admin(request):
 	return render_to_response('main/admin.html')
+
+def update_ventas(request):
+	return render_to_response('main/update.html')
+
+@login_required(login_url='/main/login')
+def salir(request):
+	logout(request)
+	return HttpResponseRedirect('/')
+
+def ingresar(request):
+	if request.method == 'POST':
+		formulario = AuthenticationForm(request.POST)
+		if formulario.is_valid:
+			usuario = request.POST['username']
+			clave = request.POST['password']
+			acceso = authenticate(username=usuario, password=clave)
+			if acceso is not None:
+				login(request, acceso)
+				return HttpResponseRedirect('/main/admin')
+			else:
+				return HttpResponse('Acceso restringido')
+	else:
+		formulario = AuthenticationForm()
+	return render_to_response('main/ingresar.html', {'formulario': formulario}, RequestContext(request))
 
 def consumo_combustibles(request):
 	ventas = Venta.objects.all()

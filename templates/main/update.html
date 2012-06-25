@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block head %}
+	<script type="text/javascript" src="/media/js/socket.io.js"></script>
+	<script type="text/javascript">
+		var socket = io.connect('http://127.0.0.1:7000');
+		socket.emit('update');
+	</script>
+{% endblock %}
