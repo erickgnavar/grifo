@@ -59,6 +59,7 @@
 					<th>Cantidad</th>
 					<th>Estacion</th>
 					<th>Total</th>
+					<th>Fecha</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -68,6 +69,7 @@
 					<td>{{ venta.cantidad }}</td>
 					<td>{{ venta.estacion.nombre }}</td>
 					<td>{{ venta.total }}</td>
+					<td>{{ venta.fecha_creado|date:'d - m - y' }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>

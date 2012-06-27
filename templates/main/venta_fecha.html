@@ -81,9 +81,8 @@
 				<td>{{ venta.cantidad }}</td>
 				<td>{{ venta.combustible }}</td>
 				<td>{{ venta.estacion }}</td>
-				<td>{{ venta.combustible.precio|mult:venta.cantidad }}</td>
-				{# <td>{{ venta.fecha_creado|date:'d - m - y' }}</td> #}
-				<td>{{ venta.fecha_creado }}</td>
+				<td>{{ venta.total }}</td>
+				<td>{{ venta.fecha_creado|date:'d - m - y' }}</td>
 			</tr>
 			{% endfor %}
 		</table>

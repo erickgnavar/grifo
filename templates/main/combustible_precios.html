@@ -1,14 +1,85 @@
 {% extends 'base.html' %}
 {% block title %}Precios de combustibles{% endblock %}
-{% block head %}
-	
-{% endblock %}
 {% block header %}
 	<h1>Precios de los combustibles</h1>
 {% endblock %}
 {% block content %}
-	
+	<article>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Nombre</th>
+					<th>Precio Actual</th>
+					<th>Nuevo Precio</th>
+					<th>Accion</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for combustible in combustibles %}
+				<tr>
+					<td>{{ combustible.id }}</td>
+					<td>{{ combustible.nombre }}</td>
+					<td>{{ combustible.precio }}</td>
+					<td><input type="number" step="0.01" placeholder="00.00" id="i-{{ combustible.id }}" /></td>
+					<td><button class="btn btn-info" id="b-{{ combustible.id }}">Actualizar</button></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="alert alert-error" id="alert-box">
+			<strong>Error: </strong><em id="mensaje"></em>
+		</div>
+	</article>
 {% endblock %}
 {% block last_script %}
-	
+	<script type="text/javascript">
+		$('#alert-box').hide();
+		$('button').click(function(e){
+			e.preventDefault();
+			var $this = $(this);
+			var $precio = $this.parent().parent().children().eq(2);
+			var $nuevo_precio = $this.parent().parent().children().eq(3).children().first();
+			var precio = $nuevo_precio.val();
+			var combustible_id = $this.attr('id').split('-')[1];
+			if(precio != ''){
+				if(precio > 0){
+					jQuery.ajax({
+						url: '/g/combustible/precio/actualizar/' + precio + '/' + combustible_id + '/',
+						success: function(data) {
+							if(data == 'OK'){
+								$this.removeClass('btn-info').text('Actualizado').addClass('btn-success');
+								$precio.text($nuevo_precio.val());
+								$nuevo_precio.val('0');
+							}
+						},
+						error: function(){
+							alerta('No se pudo actualizar el precio verifique que cumple el formato 00.00');
+							$nuevo_precio.val('');
+							$nuevo_precio.focus();
+						}
+					});
+				}else{
+					alerta('Debe ingresar un numero positivo para el precio');
+					$nuevo_precio.val('');
+					$nuevo_precio.focus();
+				}
+			}else{
+				alerta('Ingrese el nuevo precio antes de actualizar');
+				$nuevo_precio.focus();
+			}
+		});
+		$('input').focus(function(){
+			var $this = $(this);
+			var $btn = $this.parent().parent().children().last().children();
+			$btn.removeClass('btn-success').text('Actualizar').addClass('btn-info');
+		});
+		function alerta(mensaje){
+			$('#mensaje').text(mensaje);
+			$('#alert-box').fadeIn('fast');
+			setTimeout(function(){
+				$('#alert-box').fadeOut('slow');
+			}, 2000);
+		}
+	</script>
 {% endblock %}

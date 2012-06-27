@@ -89,15 +89,20 @@ def tanque_estado(request):
 @login_required(login_url='/g/login')
 def combustible_precios(request):
 	combustibles = Combustible.objects.all()
+	return render_to_response('main/combustible_precios.html', {'combustibles': combustibles})
 
-
-
-
-
-
-
-	
-	return render_to_response('main/combustible_precios.html')
+@login_required(login_url='/g/login')
+def combustible_precio_actualizar(request, precio, combustible_id):
+	try:
+		combustible = Combustible.objects.get(pk=combustible_id)
+		if precio > 0:
+			combustible.precio = precio
+			combustible.save()
+			return HttpResponse('OK')
+		else:
+			return HttpResponse('NOT OK')
+	except:
+		return HttpResponse('NOT OK')
 
 @login_required(login_url='/g/login')
 def venta_fecha_dia(request, anio, mes, dia):
