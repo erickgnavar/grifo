@@ -60,6 +60,7 @@ class Grifero(models.Model):
 	usuario = models.CharField(max_length=20, unique=True)
 	clave = models.CharField(max_length=20, null=False)
 	estado = models.CharField(max_length=20, choices=GRIFERO_ESTADOS, null=False)
+	estacion = models.ForeignKey(EstacionServicio, blank=True)
 	fecha_creado = models.DateTimeField('fecha de creacion', auto_now_add=True)
 	fecha_actualizado = models.DateTimeField('fecha de actualizacion', auto_now=True)
 

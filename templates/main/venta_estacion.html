@@ -28,8 +28,9 @@
 			width: 10px;
 		}
 		#legends ul li{
+			display: inline-block;
 			list-style: none;
-			padding: 5px;
+			padding: 10px;
 		}
 	</style>
 {% endblock %}
@@ -37,18 +38,39 @@
 	<h1>Reporte de Ventas por estacion</h1>
 {% endblock %}
 {% block content %}
-	<article id="chart">
+	<article>
+		<button id="btn-update" class="btn btn-info">Actualizar</button>
+		<br />
 	</article>
+	<article id="chart"></article>
 	<article id="legends">
-		<ul>
-
-		</ul>
+		<ul></ul>
+	</article>
+	<article class="container">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Cantidad</th>
+					<th>Estacion</th>
+					<th>Departamento</th>
+					<th>Monto</th>
+					<th>Fecha</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+			</tbody>
+		</table>
 	</article>
 {% endblock %}
 {% block last_script %}
 	<script type="text/javascript">
+		$('#btn-update').click(function(e){
+			e.preventDefault();
+			updateChart();
+		})
 		var barchart;
-		$.getJSON('/main/json/ventas/estacion/', function(data) {
+		$.getJSON('/g/json/venta/estacion/', function(data) {
 			drawChart(data);
 		});
 		function drawChart(json){
@@ -84,7 +106,7 @@
 			$('#legends ul').html('<li>' + items.join('</li><li>') + '</li>');
 		}
 		function updateChart(){
-			$.getJSON('/main/json/ventas/estacion/', function(data){
+			$.getJSON('/g/json/venta/estacion/', function(data){
 				barchart.updateJSON(data);
 			});
 		}

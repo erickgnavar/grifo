@@ -9,3 +9,6 @@ class ContactoForm(forms.Form):
 class GriferoForm(ModelForm):
 	class Meta:
 		model = Grifero
+
+class PreciosForm(forms.Form):
+	pass

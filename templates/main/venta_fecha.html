@@ -87,11 +87,23 @@
 			</tr>
 			{% endfor %}
 		</table>
+		<div class="pagination" style="text-align: center;">
+			<ul>
+				<li><a href="#">Prev</a></li>
+				<li class="active">
+					<a href="#">1</a>
+				</li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#">Next</a></li>
+			</ul>
+		</div>
 	</article>
-	<section id="charts" class="chart-box">
-		<article id="chart-cantidad" class="chart"></article>
-		<article id="chart-monto" class="chart"></article>
-		<article id="chart-estaciones" class="chart"></article>
+	<section id="charts" class="row">
+		<article id="chart-cantidad" class="span6"></article>
+		<article id="chart-monto" class="span6"></article>
+		<article id="chart-estaciones" class="span6"></article>
 	</section>
 	{% endif %}
 {% endblock %}

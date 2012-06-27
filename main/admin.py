@@ -19,7 +19,7 @@ class EstacionServicioAdmin(admin.ModelAdmin):
 
 
 class GriferoAdmin(admin.ModelAdmin):
-	list_display = ('id', 'nombre', 'usuario', 'estado', 'fecha_creado')
+	list_display = ('id', 'nombre', 'usuario', 'estado', 'estacion','fecha_creado')
 
 
 class TanqueAdmin(admin.ModelAdmin):

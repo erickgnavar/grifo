@@ -8,7 +8,7 @@
 	<div class="row">
 		<form id="form-departamento" class="span4">
 			<label for="departamento">Consulta de ventas por departamento</label>
-			<input name="departamento" id="departamento" type="text" placeholder="departamento" />
+			<input name="departamento" id="departamento" type="text" placeholder="Departamento" />
 			<input type="submit" value="Consultar" class="btn" />
 		</form>
 		<form id="form-fecha" class="span4">
@@ -17,8 +17,8 @@
 			<input type="submit" value="Consultar" class="btn" />
 		</form>
 		<form id="form-estacion" class="span4">
-			<label for=""></label>
-			<input type="submit" value="Consultar" class="btn" />
+			<label for="">Reporte de ventas por estacion</label>
+			<input type="submit" value="Generar" class="btn" />
 		</form>
 	</div>
 {% endblock %}
@@ -30,18 +30,18 @@
 				url = $('#departamento').val();
 				url = url.replace(' ', '');
 				url = url.replace(' ', '');
-				$('#form-departamento').attr('action', '/main/ventas/departamento/' + url);
+				$('#form-departamento').attr('action', '/g/venta/departamento/' + url);
 				this.submit();
 			});
 			$('#form-fecha').submit(function(e){
 				e.preventDefault();
 				url = $('#fecha').val();
-				$('#form-fecha').attr('action', '/main/ventas/' + url);
+				$('#form-fecha').attr('action', '/g/venta/' + url);
 				this.submit();
 			});
 			$('#form-estacion').submit(function(e){
 				e.preventDefault();
-				$('#form-estacion').attr('action', '/main/ventas/estacion');
+				$('#form-estacion').attr('action', '/g/venta/estacion');
 				this.submit();
 			});
 		});

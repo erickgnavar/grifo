@@ -12,7 +12,7 @@ from django.template import RequestContext
 from models import *
 
 def home(request):
-	return HttpResponseRedirect('/main/admin')
+	return HttpResponseRedirect('/g/admin')
 
 def error_500(request):
 	return render_to_response('500.html')
@@ -20,18 +20,16 @@ def error_500(request):
 def error_404(request):
 	return render_to_response('404.html')
 
+@login_required(login_url='/g/login')
 def griferos(request):
 	griferos = Grifero.objects.all()
 	return render_to_response('main/griferos.html', {'griferos': griferos})
 
-@login_required(login_url='/main/login')
+@login_required(login_url='/g/login')
 def admin(request):
 	return render_to_response('main/admin.html')
 
-def update_ventas(request):
-	return render_to_response('main/update.html')
-
-@login_required(login_url='/main/login')
+@login_required(login_url='/g/login')
 def salir(request):
 	logout(request)
 	return HttpResponseRedirect('/')
@@ -45,14 +43,20 @@ def ingresar(request):
 			acceso = authenticate(username=usuario, password=clave)
 			if acceso is not None:
 				login(request, acceso)
-				return HttpResponseRedirect('/main/admin')
+				return HttpResponseRedirect('/g/admin')
 			else:
 				return HttpResponse('Acceso restringido')
 	else:
 		formulario = AuthenticationForm()
 	return render_to_response('main/ingresar.html', {'formulario': formulario}, RequestContext(request))
 
-def consumo_combustibles(request):
+@login_required(login_url='/g/login')
+def grifero_listado(request):
+	griferos = Grifero.objects.all()
+	return render_to_response('main/grifero_listado.html', {'griferos': griferos})
+
+@login_required(login_url='/g/login')
+def combustible_consumo(request):
 	ventas = Venta.objects.all()
 	
 	data = graficoVentas(ventas)
@@ -76,12 +80,27 @@ def consumo_combustibles(request):
 		mes = (int)(venta.fecha_creado.strftime('%m'))
 		(data_meses[mes - 1])['cantidad'] += venta.cantidad
 
-	return render_to_response('main/consumo_combustibles.html', {'data': data, 'data_meses': data_meses})
+	return render_to_response('main/combustible_consumo.html', {'data': data, 'data_meses': data_meses})
 
-def tanques(request):
-	return HttpResponse('tanque')
+def tanque_estado(request):
+	tanques = Tanque.objects.all()
+	return render_to_response('main/tanque_estado.html', {'tanques': tanques})
 
-def ventas_dia(request, anio, mes, dia):
+@login_required(login_url='/g/login')
+def combustible_precios(request):
+	combustibles = Combustible.objects.all()
+
+
+
+
+
+
+
+	
+	return render_to_response('main/combustible_precios.html')
+
+@login_required(login_url='/g/login')
+def venta_fecha_dia(request, anio, mes, dia):
 	fecha = '%s - %s - %s' % (anio, mes, dia)
 	anio = (int)(anio)
 	mes = (int)(mes)
@@ -90,25 +109,28 @@ def ventas_dia(request, anio, mes, dia):
 	ventas = Venta.objects.filter(fecha_creado__year=anio, fecha_creado__month=mes, fecha_creado__day=dia)
 	data = graficoVentas(ventas)
 	data_estaciones = graficoVentasEstacion(ventas)
-	return render_to_response('main/reporte_ventas.html', {'fecha': fecha, 'ventas': ventas, 'data': data, 'data_estaciones': data_estaciones})
+	return render_to_response('main/venta_fecha.html', {'fecha': fecha, 'ventas': ventas, 'data': data, 'data_estaciones': data_estaciones})
 
-def ventas_mes(request, anio, mes):
+@login_required(login_url='/g/login')
+def venta_fecha_mes(request, anio, mes):
 	fecha = '%s - %s' % (anio, mes)
 	anio = (int)(anio)
 	mes = (int)(mes)
 	ventas = Venta.objects.filter(fecha_creado__year=anio, fecha_creado__month=mes)
 	data = graficoVentas(ventas)
 	data_estaciones = graficoVentasEstacion(ventas)
-	return render_to_response('main/reporte_ventas.html', {'fecha': fecha, 'ventas': ventas, 'data': data, 'data_estaciones': data_estaciones})
+	return render_to_response('main/venta_fecha.html', {'fecha': fecha, 'ventas': ventas, 'data': data, 'data_estaciones': data_estaciones})
 
-def ventas_anio(request, anio):
+@login_required(login_url='/g/login')
+def venta_fecha_anio(request, anio):
 	anio = (int)(anio)
 	ventas = Venta.objects.filter(fecha_creado__year=anio)
 	data = graficoVentas(ventas)
 	data_estaciones = graficoVentasEstacion(ventas)
-	return render_to_response('main/reporte_ventas.html', {'fecha': anio, 'ventas': ventas, 'data': data, 'data_estaciones': data_estaciones})
+	return render_to_response('main/venta_fecha.html', {'fecha': anio, 'ventas': ventas, 'data': data, 'data_estaciones': data_estaciones})
 
-def ventas_departamento(request, departamento):
+@login_required(login_url='/g/login')
+def venta_departamento(request, departamento):
 	estaciones = EstacionServicio.objects.filter(departamento=departamento.upper())
 
 	data = []
@@ -124,13 +146,13 @@ def ventas_departamento(request, departamento):
 				item['cantidad'] += venta.cantidad
 				item['monto'] += venta.cantidad * venta.combustible.precio
 
-	return render_to_response('main/reporte_ventas_departamento.html', {'ventas': ventas, 'data': data, 'departamento': departamento})
+	return render_to_response('main/venta_departamento.html', {'ventas': ventas, 'data': data, 'departamento': departamento})
 
+@login_required(login_url='/g/login')
+def venta_estacion(request):
+	return render_to_response('main/venta_estacion.html')
 
-def ventas_estacion(request):
-	return render_to_response('main/reporte_ventas_estacion.html')
-
-def jsonVentas(request):
+def json_venta_estacion(request):
 	data = {}
 	labels = []
 	values = []
@@ -153,10 +175,6 @@ def jsonVentas(request):
 	data['label'] = labels
 	data['values'] = values
 	return HttpResponse(json.dumps(data), mimetype="application/json")
-
-
-def prueba(request, nombre):
-	return HttpResponse(nombre)
 
 #Funciones aparte
 

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Tanques de combustible{% endblock %}
+{% block head %}
+	
+{% endblock %}
+{% block header %}
+	<h1>Estado de tanques de combustible</h1>
+{% endblock %}
+{% block content %}
+	<article>
+		<table class="table table-striped table-rendered">
+			<thead>
+				<tr>
+					<th>Combustible</th>
+					<th>Capacidad</th>
+					<th>Contenido</th>
+					<th>Estacion</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for tanque in tanques %}
+				<tr>
+					<td>{{ tanque.combustible.nombre }}</td>
+					<td>{{ tanque.capacidad }}</td>
+					<td>{{ tanque.contenido }}</td>
+					<td>{{ tanque.estacion }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</article>
+{% endblock %}
+{% block last_script %}
+	
+{% endblock %}
