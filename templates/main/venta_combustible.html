@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load poll_extras %}
+{% block title %}Ventas por departamento{% endblock %}
+{% block head %}
+	<script type="text/javascript" src="/media/js/chart.js"></script>
+	<script type="text/javascript">
+		google.load('visualization', '1.0', {'packages':['corechart']});
+		google.setOnLoadCallback(function(){
+			/* Chart Cantidad */
+			var data_cantidad = new google.visualization.DataTable();
+			data_cantidad.addColumn('string', 'Estacion');
+			data_cantidad.addColumn('number', 'Cantidad');
+			data_cantidad.addRows([
+			{% for item in data %}
+				['{{ item.estacion|capfirst }}', {{ item.cantidad }}],
+			{% endfor %}	
+			]);			
+			var options_cantidad = {
+				'title': 'Distribucion de ventas por cantidad | L',
+				'width': 800,
+				'height': 300
+			}
+			var chart_cantidad = new google.visualization.ColumnChart(document.getElementById('chart-cantidad'));
+			chart_cantidad.draw(data_cantidad, options_cantidad);
+			/* Chart Monto */
+			var data_monto = new google.visualization.DataTable();
+			data_monto.addColumn('string', 'Estacion');
+			data_monto.addColumn('number', 'Monto');
+			data_monto.addRows([
+			{% for item in data %}
+				['{{ item.estacion|capfirst }}', {{ item.monto }}],
+			{% endfor %}	
+			]);			
+			var options_monto = {
+				'title': 'Distribucion de ventas por monto | S/.',
+				'width': 800,
+				'height': 300
+			}
+			var chart_monto = new google.visualization.ColumnChart(document.getElementById('chart-monto'));
+			chart_monto.draw(data_monto, options_monto);
+		});
+	</script>
+{% endblock %}
+{% block header %}
+	{% if ventas %}
+	<h1>Reporte de Ventas por combustible: {{ combustible.nombre }}</h1>
+	<h2><a href="#charts" id="estadisticas" class="btn btn-info">estadisticas</a></h2>
+	{% else %}
+	<h1>No se encontro datos</h1>
+	{% endif %}
+{% endblock %}
+{% block content %}
+	{% if ventas %}
+	<article>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Estacion</th>
+					<th>Cantidad</th>
+					<th>Total</th>
+					<th>Fecha</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for venta in ventas %}
+				<tr>
+					<td>{{ venta.estacion.nombre }}</td>
+					<td>{{ venta.cantidad }}</td>
+					<td>{{ venta.total }}</td>
+					<td>{{ venta.fecha_creado|date:'d - m - y' }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="pagination" style="text-align: center;">
+			<ul>
+				<li><a href="#">Prev</a></li>
+				<li class="active">
+					<a href="#">1</a>
+				</li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#">Next</a></li>
+			</ul>
+		</div>
+	</article>
+	<section id="charts">
+		<article id="chart-cantidad" class="span12"></article>
+		<article id="chart-monto" class="span12"></article>
+	</section>
+	{% endif %}
+{% endblock %}
+{% block last_script %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#charts').hide();
+			$('#estadisticas').click(function(e){
+				$('#charts').fadeIn('slow');
+			});
+		});
+	</script>
+{% endblock %}

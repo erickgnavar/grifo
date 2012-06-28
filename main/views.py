@@ -22,7 +22,8 @@ def error_404(request):
 
 @login_required(login_url='/g/login')
 def reportes(request):
-	return render_to_response('main/reportes.html')
+	combustibles = Combustible.objects.all()
+	return render_to_response('main/reportes.html', {'combustibles': combustibles})
 
 @login_required(login_url='/g/login')
 def salir(request):
@@ -99,6 +100,13 @@ def combustible_precio_actualizar(request, precio, combustible_id):
 			return HttpResponse('NOT OK')
 	except:
 		return HttpResponse('NOT OK')
+
+@login_required(login_url='/g/login')
+def venta_combustible(request, id):
+	ventas = Venta.objects.filter(combustible__id=id)
+	data = graficoVentasEstacion(ventas);
+	combustible = Combustible.objects.get(pk=id)
+	return render_to_response('main/venta_combustible.html', {'ventas': ventas, 'data': data, 'combustible': combustible})
 
 @login_required(login_url='/g/login')
 def venta_fecha_dia(request, anio, mes, dia):
@@ -191,17 +199,18 @@ def graficoVentas(ventas):
 		for item in data:
 			if venta.combustible.nombre == item['nombre']:
 				item['cantidad'] += venta.cantidad
-				item['monto'] += venta.combustible.precio * venta.cantidad
+				item['monto'] += venta.total
 	return data
 
 def graficoVentasEstacion(ventas):
 	estaciones = EstacionServicio.objects.all()
 	data_estaciones = []
 	for estacion in estaciones:
-		data_estaciones.append({'estacion': estacion.nombre, 'cantidad': 0})
+		data_estaciones.append({'estacion': estacion.nombre, 'cantidad': 0, 'monto': 0})
 
 	for venta in ventas:
 		for item in data_estaciones:
 			if venta.estacion.nombre == item['estacion']:
 				item['cantidad'] += venta.cantidad
+				item['monto'] += venta.total
 	return data_estaciones

@@ -16,6 +16,15 @@
 			<input name="fecha" id="fecha" type="text" placeholder="AAAA/MM/DD" />
 			<input type="submit" value="Consultar" class="btn" />
 		</form>
+		<form id="form-combustible" class="span4">
+			<label for="combustible">Seleccione combustible</label>
+			<select name="combustible" id="select-combustible">
+			{% for combustible in combustibles %}
+				<option value="{{ combustible.id }}">{{ combustible.nombre }}</option>	
+			{% endfor %}
+			</select>
+			<input type="submit" value="Consultar" class="btn" />
+		</form>
 		<form id="form-estacion-reporte" class="span4">
 			<label for="">Reporte General de ventas por estacion</label>
 			<input type="submit" value="Generar" class="btn" />
@@ -37,6 +46,12 @@
 				e.preventDefault();
 				var url = $('#fecha').val();
 				$('#form-fecha').attr('action', '/g/venta/' + url);
+				this.submit();
+			});
+			$('#form-combustible').submit(function(e){
+				e.preventDefault();
+				var id = $('#select-combustible').val();
+				$('#form-combustible').attr('action', '/g/venta/combustible/' + id);
 				this.submit();
 			});
 			$('#form-estacion-reporte').submit(function(e){
