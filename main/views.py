@@ -12,7 +12,7 @@ from django.template import RequestContext
 from models import *
 
 def home(request):
-	return HttpResponseRedirect('/g/admin')
+	return render_to_response('main/home.html', RequestContext(request))
 
 def error_500(request):
 	return render_to_response('500.html')
@@ -21,13 +21,8 @@ def error_404(request):
 	return render_to_response('404.html')
 
 @login_required(login_url='/g/login')
-def griferos(request):
-	griferos = Grifero.objects.all()
-	return render_to_response('main/griferos.html', {'griferos': griferos})
-
-@login_required(login_url='/g/login')
-def admin(request):
-	return render_to_response('main/admin.html')
+def reportes(request):
+	return render_to_response('main/reportes.html')
 
 @login_required(login_url='/g/login')
 def salir(request):
@@ -43,9 +38,9 @@ def ingresar(request):
 			acceso = authenticate(username=usuario, password=clave)
 			if acceso is not None:
 				login(request, acceso)
-				return HttpResponseRedirect('/g/admin')
+				return HttpResponseRedirect('/g/')
 			else:
-				return HttpResponse('Acceso restringido')
+				return render_to_response('main/ingresar.html', {'formulario': formulario, 'error': 'Usuario o clave invalidos'}, RequestContext(request))
 	else:
 		formulario = AuthenticationForm()
 	return render_to_response('main/ingresar.html', {'formulario': formulario}, RequestContext(request))
@@ -53,7 +48,8 @@ def ingresar(request):
 @login_required(login_url='/g/login')
 def grifero_listado(request):
 	griferos = Grifero.objects.all()
-	return render_to_response('main/grifero_listado.html', {'griferos': griferos})
+	estaciones = EstacionServicio.objects.all()
+	return render_to_response('main/grifero_listado.html', {'griferos': griferos, 'estaciones': estaciones})
 
 @login_required(login_url='/g/login')
 def combustible_consumo(request):

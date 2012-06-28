@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load poll_extras %}
+{% block title %}Inicio{% endblock %}
+{% block header %}
+	<article class="hero-unit">
+		<h1>GasNatu</h1>
+		<p>
+			Aplicacion para la administracion de una red de grifos
+		</p>
+		{% if user.is_authenticated %}
+		<p>
+			Bienvenido, {{ user.first_name }} {{ user.last_name }}.
+		</p>
+		{% else %}
+		<p>
+			<a class="btn btn-primary btn-large" href="/g/login/">Ingresar</a>
+		</p>
+		{% endif %}
+	</article>
+{% endblock %}
+{% block content %}
+	<div class="row">
+		<article class="span5">
+			<img src="/media/img/gas-img.png" alt="">
+		</article>
+		<article class="span7">
+			<blockquote>
+				Nuestra principal preocupación es la protección de las personas que trabajan en nuestras instalaciones, de los clientes y de todos los habitantes de las comunidades donde operamos. Esto requiere un importante compromiso a todos los niveles de la organización, por ello, el Comité de Dirección establece los objetivos y las líneas estratégicas de seguridad y medio ambiente.
+			</blockquote>
+			<blockquote>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+				quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+				consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+				cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</blockquote>
+		</article>
+	</div>
+{% endblock %}

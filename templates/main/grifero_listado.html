@@ -4,8 +4,38 @@
 	
 {% endblock %}
 {% block header %}
-	<h1>Lstado de griferos</h1>
+	<h1>Listado de griferos</h1>
 {% endblock %}
 {% block content %}
-	
+	<article>
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Usuario</th>
+					<th>Estado</th>
+					<th>Estacion</th>
+					<th>Accion</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for grifero in griferos %}
+				<tr>
+					<td>{{ grifero.nombre }}</td>
+					<td>{{ grifero.usuario }}</td>
+					<td>{{ grifero.estado }}</td>
+					<td>{{ grifero.estacion.nombre }}</td>
+					<td>
+						<a class="btn btn-info" id="b-{{ grifero.id }}">Editar</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+			<select name="estacion" id="">
+			{% for estacion in estaciones %}
+				<option value="{{ estacion.id }}">{{ estacion.nombre|capfirst }}</option>
+			{% endfor %}
+			</select>
+		</table>
+	</article>
 {% endblock %}

@@ -5,15 +5,26 @@
 {% endblock %}
 {% block content %}
 	<div class="row">
-		<form action="" method="post" class="well span3 offset4">{% csrf_token %}
+		<form id="form-ingresar" action="" method="post" class="well span3 offset4">{% csrf_token %}
 			<label for="username">Usuario</label>
 			<input type="text" name="username" id="username" autofocus />
 			<label for="password">Clave</label>
 			<input type="password" name="password" id="password" />
 			<span class="help-block"></span>
 			<button type="submit" class="btn btn-primary">Entrar</button>
+			{% if error %}
+			<br />
+			<br>
+			<div class="alert alert-error">
+				<a class="close" data-dismiss="alert" href="#">×</a>
+				<h4 class="alert-heading">Error</h4>
+				{{ error }}
+			</div>
+			{% endif %}
 		</form>
 	</div>
 {% endblock %}
 {% block last_script %}
+	<script type="text/javascript">
+	</script>
 {% endblock %}

@@ -13,11 +13,11 @@
 		</form>
 		<form id="form-fecha" class="span4">
 			<label for="fecha">Consulta de ventas por fecha</label>
-			<input name="fecha" id="fecha" type="date" placeholder="AAAA/MM/DD" />
+			<input name="fecha" id="fecha" type="text" placeholder="AAAA/MM/DD" />
 			<input type="submit" value="Consultar" class="btn" />
 		</form>
-		<form id="form-estacion" class="span4">
-			<label for="">Reporte de ventas por estacion</label>
+		<form id="form-estacion-reporte" class="span4">
+			<label for="">Reporte General de ventas por estacion</label>
 			<input type="submit" value="Generar" class="btn" />
 		</form>
 	</div>
@@ -27,7 +27,7 @@
 		$(document).ready(function(){
 			$('#form-departamento').submit(function(e){
 				e.preventDefault();
-				url = $('#departamento').val();
+				var url = $('#departamento').val();
 				url = url.replace(' ', '');
 				url = url.replace(' ', '');
 				$('#form-departamento').attr('action', '/g/venta/departamento/' + url);
@@ -35,13 +35,13 @@
 			});
 			$('#form-fecha').submit(function(e){
 				e.preventDefault();
-				url = $('#fecha').val();
+				var url = $('#fecha').val();
 				$('#form-fecha').attr('action', '/g/venta/' + url);
 				this.submit();
 			});
-			$('#form-estacion').submit(function(e){
+			$('#form-estacion-reporte').submit(function(e){
 				e.preventDefault();
-				$('#form-estacion').attr('action', '/g/venta/estacion');
+				$('#form-estacion-reporte').attr('action', '/g/venta/estacion/');
 				this.submit();
 			});
 		});
